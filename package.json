@@ -1,8 +1,8 @@
 {
-  "name": "psf-msg-wallet",
+  "name": "psf-mc-wallet",
   "version": "1.0.0",
   "description": "",
-  "main": "psf-msg-wallet.js",
+  "main": "psf-mc-wallet.js",
   "type": "module",
   "scripts": {
     "test": "c8 --reporter=text mocha --exit --timeout 15000 --recursive test/unit",

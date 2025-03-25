@@ -1,22 +1,21 @@
-# psf-msg-wallet
+# psf-mc-wallet
 
-This is a command-line interface (CLI) forked from [psf-bch-wallet](https://github.com/Permissionless-Software-Foundation/psf-bch-wallet). This fork has all the same commands, but adds additional commands around sending an end-to-end encrypted (**E2EE**) message to any BCH address, similar to email. It uses a [Nostr](https://nostr.org/) relay to store the encrypted message, until the receiver can download and decrypt it with their BCH wallet.
+This is a command-line interface (CLI) forked from [psf-msg-wallet](https://github.com/Permissionless-Software-Foundation/psf-msg-wallet). This fork has all the same commands, but adds additional commands for the [PSF Minting Council](https://psfoundation.info/governance/minting-council) to recieve, review, and issue multisignature approval transactions. These transactions are currently used to set the price to write data to the [PSFFPP](https://psffpp.com), and will be used for other purposes in the future.
 
-Commands have also been added for uploading files to the [PSF IPFS network](https://psffpp.com). In the future, commands will be added for encrypting and decrypting files using a BCH wallet.
 
 ## Installation
 
 This software requires node.js v20 or higher. Instructions for installation:
 
-- `git clone https://github.com/Permissionless-Software-Foundation/psf-msg-wallet`
-- `cd psf-msg-wallet`
+- `git clone https://github.com/Permissionless-Software-Foundation/psf-mc-wallet`
+- `cd psf-mc-wallet`
 - `npm install`
 
 ## Usage
 
 ### Display Help
 
-- `node psf-msg-wallet.js help`
+- `node psf-mc-wallet.js help`
 
 -----
 
