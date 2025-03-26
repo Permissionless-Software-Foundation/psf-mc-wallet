@@ -154,6 +154,10 @@ class BchWallet {
   async broadcast () {
     return true
   }
+
+  async getTokenData () {
+    return true
+  }
 }
 
 // module.exports = BchWallet
