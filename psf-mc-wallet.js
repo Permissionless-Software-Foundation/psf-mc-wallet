@@ -21,6 +21,8 @@ import MsgNostrCheck from './src/commands/msg-nostr-check.js'
 import MsgNostrRead from './src/commands/msg-nostr-read.js'
 import FileStage from './src/commands/file-stage.js'
 import FilePin from './src/commands/file-pin.js'
+import McCollectKeys from './src/commands/mc-collect-keys.js'
+
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
 const walletList = new WalletList()
@@ -37,7 +39,7 @@ const msgNostrRead = new MsgNostrRead()
 const fileStage = new FileStage()
 const filePin = new FilePin()
 const program = new Command()
-
+const mcCollectKeys = new McCollectKeys()
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
@@ -130,5 +132,10 @@ program.command('file-pin')
   .option('-s, --size <string>', 'File size in MB. Use 1 for files less than 1MB.')
   .option('-f, --filename <string>', 'Name and extension of the file to be pinned')
   .action(filePin.run)
+
+program.command('mc-collect-keys')
+  .description('Collect the public keys of the holders of Minting Council NFTs')
+  .option('-n, --name <string>', 'wallet name to pay for message signal')
+  .action(mcCollectKeys.run)
 
 program.parseAsync(process.argv)
