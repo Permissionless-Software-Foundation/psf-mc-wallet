@@ -11,7 +11,6 @@ import { promises as fs } from 'fs'
 import MCCollectKeys from '../../../src/commands/mc-collect-keys.js'
 import WalletCreate from '../../../src/commands/wallet-create.js'
 import BchWalletMock from '../../mocks/msw-mock.js'
-import WalletServiceMock from '../../mocks/wallet-service-mock.js'
 const walletCreate = new WalletCreate()
 
 const __dirname = import.meta.dirname

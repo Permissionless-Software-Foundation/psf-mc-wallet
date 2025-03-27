@@ -16,6 +16,9 @@
 // Global npm libraries
 import bitcore from '@chris.troutner/bitcore-lib-cash'
 import RetryQueue from '@chris.troutner/retry-queue'
+import FormData from 'form-data'
+import { Readable } from 'stream'
+import axios from 'axios'
 
 // Local libraries
 import WalletUtil from '../lib/wallet-util.js'
@@ -40,12 +43,14 @@ class McPriceUpdate {
     this.config = config
     this.retryQueue = new RetryQueue()
     this.mcCollectKeys = new McCollectKeys()
-
+    this.axios = axios
     // Bind 'this' object to all subfunctions.
     this.run = this.run.bind(this)
     this.validateFlags = this.validateFlags.bind(this)
     this.getPublicKeys = this.getPublicKeys.bind(this)
     this.createMultisigWallet = this.createMultisigWallet.bind(this)
+    this.uploadUpdateObject = this.uploadUpdateObject.bind(this)
+    this.writeCidToBlockchain = this.writeCidToBlockchain.bind(this)
   }
 
   async run (flags) {
@@ -63,6 +68,38 @@ class McPriceUpdate {
       // Generate a 50% + 1 multisig wallet.
       const walletObj = this.createMultisigWallet(keys)
       console.log(`wallet object: ${JSON.stringify(walletObj)}`)
+
+      // Get the current write price from an API.
+      // TODO: self-generate this price so that we don't have to trust the API.
+      const writePrice = await this.bchWallet.getPsfWritePrice()
+
+      // Compile an update object
+      const updateTxObj = {
+        groupId: GROUP_ID,
+        keys,
+        walletObj,
+        multisigAddr: walletObj.address,
+        p2wdbWritePrice: writePrice
+      }
+
+      const cid = await this.uploadUpdateObject(updateTxObj)
+      console.log('cid: ', cid)
+
+      this.psffpp = await this.walletUtil.instancePsffpp(this.bchWallet)
+
+      // Generate a Pin Claim
+      const pinObj = {
+        cid,
+        filename: 'data.json',
+        fileSizeInMegabytes: 1
+      }
+      const { pobTxid, claimTxid } = await this.psffpp.createPinClaim(pinObj)
+      console.log('pobTxid: ', pobTxid)
+      console.log('claimTxid: ', claimTxid)
+
+      // Generate an update transaction with the CID
+      const updateTxid = await this.writeCidToBlockchain(cid)
+      console.log('updateTxid: ', updateTxid)
 
       return true
     } catch (err) {
@@ -134,6 +171,75 @@ class McPriceUpdate {
       return walletObj
     } catch (err) {
       console.error('Error in createMultisigWallet()')
+      throw err
+    }
+  }
+
+  // Combine data into a single object needed by the wallet for each member
+  // of the Minting Council.
+  async uploadUpdateObject (updateTxObj) {
+    try {
+      // Convert the object to a JSON string.
+      const updateTxStr = JSON.stringify(updateTxObj)
+
+      // Conver the string to a readable stream
+      const updateTxStream = Readable.from([updateTxStr])
+
+      // Create a new FormData instance
+      const form = new FormData()
+
+      // Append the file stream to the form data
+      // The key "file" matches whatever your server expects under its multipart field name
+      form.append('file', updateTxStream)
+
+      // Make a POST request to the server with the form data
+      const response = await this.axios.post(`${this.config.fileStagingURL}/ipfs/upload`, form, {
+        headers: {
+          // `form.getHeaders()` contains the correct `Content-Type: multipart/form-data; boundary=...`
+          ...form.getHeaders()
+        }
+      })
+
+      // console.log('File uploaded successfully:', response.data);
+
+      const cid = response.data.cid
+
+      return cid
+    } catch (err) {
+      console.error('Error in createUpdateObject()')
+      throw err
+    }
+  }
+
+  // This function expects an IPFS CID as input. This is the output of the
+  // uploadDataToIpfs() function. It writes the update data CID to the BCH
+  // blockchain, and generates the transaction that the Minting Council will
+  // approve.
+  async writeCidToBlockchain (cid) {
+    try {
+      // Generate the data for the OP_RETURN
+      const now = new Date()
+      const opReturnObj = {
+        cid,
+        ts: now.getTime()
+      }
+      const opReturnStr = JSON.stringify(opReturnObj)
+
+      // Tag the reference address with dust, so that this TX appears in its
+      // TX history.
+      const receivers = [{
+        address: WRITE_PRICE_ADDR,
+        amountSat: 546
+      }]
+
+      await this.bchWallet.initialize()
+
+      const txid = await this.bchWallet.sendOpReturn(opReturnStr, '', receivers)
+      console.log('txid: ', txid)
+
+      return txid
+    } catch (err) {
+      console.error('Error in writeCidToBlockchain(): ', err)
       throw err
     }
   }

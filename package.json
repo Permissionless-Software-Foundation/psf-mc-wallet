@@ -25,7 +25,7 @@
     "collect.js": "4.36.1",
     "commander": "12.1.0",
     "form-data": "4.0.1",
-    "minimal-slp-wallet": "5.12.1",
+    "minimal-slp-wallet": "5.13.2",
     "nostr": "0.2.8",
     "nostr-tools": "2.8.1",
     "psffpp": "1.1.10",
