@@ -12,6 +12,7 @@
   "author": "Chris Troutner",
   "license": "MIT",
   "dependencies": {
+    "@chris.troutner/bitcore-lib-cash": "8.25.26",
     "@chris.troutner/retry-queue": "1.0.10",
     "@noble/hashes": "1.5.0",
     "axios": "1.7.9",

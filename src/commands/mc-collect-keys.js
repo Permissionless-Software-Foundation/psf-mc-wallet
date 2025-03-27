@@ -6,9 +6,6 @@
 */
 
 // Global npm libraries
-import BchWallet from 'minimal-slp-wallet'
-import collect from 'collect.js'
-import fs from 'fs'
 
 // Local libraries
 import WalletUtil from '../lib/wallet-util.js'
@@ -26,11 +23,8 @@ const GROUP_ID = '4c039aa116b018f851cfe05e4e6e5a2d45076964a38d6b875ffd2f6bb5b3f8
 class McCollectKeys {
   constructor () {
     // Encapsulate dependencies
-    this.BchWallet = BchWallet
     this.walletUtil = new WalletUtil()
     this.config = config
-    this.fs = fs
-    this.collect = collect
 
     // Bind 'this' object to all subfunctions.
     this.run = this.run.bind(this)
@@ -67,7 +61,7 @@ class McCollectKeys {
 
       return true
     } catch (err) {
-      console.error('Error in wallet-balance: ', err)
+      console.error('Error in mc-collect-keys: ', err)
       return 0
     }
   }
@@ -159,7 +153,6 @@ class McCollectKeys {
       throw err
     }
   }
-
 }
 
 export default McCollectKeys

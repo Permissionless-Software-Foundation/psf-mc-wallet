@@ -22,6 +22,7 @@ import MsgNostrRead from './src/commands/msg-nostr-read.js'
 import FileStage from './src/commands/file-stage.js'
 import FilePin from './src/commands/file-pin.js'
 import McCollectKeys from './src/commands/mc-collect-keys.js'
+import McPriceUpdate from './src/commands/mc-price-update.js'
 
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
@@ -40,6 +41,8 @@ const fileStage = new FileStage()
 const filePin = new FilePin()
 const program = new Command()
 const mcCollectKeys = new McCollectKeys()
+const mcPriceUpdate = new McPriceUpdate()
+
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
@@ -137,5 +140,10 @@ program.command('mc-collect-keys')
   .description('Collect the public keys of the holders of Minting Council NFTs')
   .option('-n, --name <string>', 'wallet name to pay for message signal')
   .action(mcCollectKeys.run)
+
+program.command('mc-price-update')
+  .description('Update the price of the Minting Council NFTs')
+  .option('-n, --name <string>', 'wallet name to pay for message signal')
+  .action(mcPriceUpdate.run)
 
 program.parseAsync(process.argv)
