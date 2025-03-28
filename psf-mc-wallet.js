@@ -23,6 +23,7 @@ import FileStage from './src/commands/file-stage.js'
 import FilePin from './src/commands/file-pin.js'
 import McCollectKeys from './src/commands/mc-collect-keys.js'
 import McPriceUpdate from './src/commands/mc-price-update.js'
+import McApproval from './src/commands/mc-approval.js'
 
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
@@ -42,7 +43,7 @@ const filePin = new FilePin()
 const program = new Command()
 const mcCollectKeys = new McCollectKeys()
 const mcPriceUpdate = new McPriceUpdate()
-
+const mcApproval = new McApproval()
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
@@ -145,5 +146,11 @@ program.command('mc-price-update')
   .description('Update the price of the Minting Council NFTs')
   .option('-n, --name <string>', 'wallet name to pay for message signal')
   .action(mcPriceUpdate.run)
+
+program.command('mc-approval')
+  .description('Generate a PS009 approval transaction for the Minting Council NFTs')
+  .option('-n, --name <string>', 'wallet name to pay for message signal')
+  .option('-t, --txid <string>', 'TXID of the price update transaction')
+  .action(mcApproval.run)
 
 program.parseAsync(process.argv)

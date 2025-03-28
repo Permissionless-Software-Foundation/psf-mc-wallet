@@ -44,6 +44,7 @@ class McPriceUpdate {
     this.retryQueue = new RetryQueue()
     this.mcCollectKeys = new McCollectKeys()
     this.axios = axios
+
     // Bind 'this' object to all subfunctions.
     this.run = this.run.bind(this)
     this.validateFlags = this.validateFlags.bind(this)
@@ -60,6 +61,9 @@ class McPriceUpdate {
       // Initialize the wallet.
       this.bchWallet = await this.walletUtil.instanceWallet(flags.name)
       await this.bchWallet.initialize()
+
+      // Initialize the PSFFPP library.
+      this.psffpp = await this.walletUtil.instancePsffpp(this.bchWallet)
 
       // Look up the public keys for MC NFT holders.
       const keys = await this.retryQueue.addToQueue(this.getPublicKeys, {})
@@ -84,8 +88,6 @@ class McPriceUpdate {
 
       const cid = await this.uploadUpdateObject(updateTxObj)
       console.log('cid: ', cid)
-
-      this.psffpp = await this.walletUtil.instancePsffpp(this.bchWallet)
 
       // Generate a Pin Claim
       const pinObj = {
