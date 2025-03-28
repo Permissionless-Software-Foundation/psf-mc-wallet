@@ -203,5 +203,18 @@ describe('#mc-price-update', () => {
       const result = await uut.run(flags)
       assert.equal(result, true)
     })
+
+    it('should catch errors, report stack, and return 0', async () => {
+      // Force an error
+      sandbox.stub(uut.walletUtil, 'instanceWallet').rejects(new Error('test error'))
+
+      const flags = {
+        name: 'test123'
+      }
+
+      const result = await uut.run(flags)
+
+      assert.equal(result, 0)
+    })
   })
 })
