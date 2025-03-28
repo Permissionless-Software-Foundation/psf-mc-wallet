@@ -99,7 +99,7 @@ class McPriceUpdate {
 
       // Generate an update transaction with the CID
       const updateTxid = await this.writeCidToBlockchain(cid)
-      console.log('updateTxid: ', updateTxid)
+      console.log('\nupdateTxid: ', updateTxid)
 
       return true
     } catch (err) {
@@ -175,10 +175,14 @@ class McPriceUpdate {
     }
   }
 
-  // Combine data into a single object needed by the wallet for each member
-  // of the Minting Council.
+  // upload the update object to IPFS as a JSON file. This stages the file
+  // for pinning to the PSFFPP.
   async uploadUpdateObject (updateTxObj) {
     try {
+      if (!updateTxObj) {
+        throw new Error('No update object provided.')
+      }
+
       // Convert the object to a JSON string.
       const updateTxStr = JSON.stringify(updateTxObj)
 
@@ -213,8 +217,8 @@ class McPriceUpdate {
 
   // This function expects an IPFS CID as input. This is the output of the
   // uploadDataToIpfs() function. It writes the update data CID to the BCH
-  // blockchain, and generates the transaction that the Minting Council will
-  // approve.
+  // blockchain, and generates the transaction ID that the Minting Council
+  // will approve.
   async writeCidToBlockchain (cid) {
     try {
       // Generate the data for the OP_RETURN
@@ -239,7 +243,7 @@ class McPriceUpdate {
 
       return txid
     } catch (err) {
-      console.error('Error in writeCidToBlockchain(): ', err)
+      console.error('Error in writeCidToBlockchain()')
       throw err
     }
   }
