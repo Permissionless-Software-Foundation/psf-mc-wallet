@@ -21,13 +21,10 @@ import MsgNostrCheck from './src/commands/msg-nostr-check.js'
 import MsgNostrRead from './src/commands/msg-nostr-read.js'
 import FileStage from './src/commands/file-stage.js'
 import FilePin from './src/commands/file-pin.js'
-<<<<<<< HEAD:psf-mc-wallet.js
 import McCollectKeys from './src/commands/mc-collect-keys.js'
 import McPriceUpdate from './src/commands/mc-price-update.js'
 import McApproval from './src/commands/mc-approval.js'
-=======
 import Txt2Json from './src/commands/txt2json.js'
->>>>>>> upstream/master:psf-msg-wallet.js
 
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
@@ -45,11 +42,11 @@ const msgNostrRead = new MsgNostrRead()
 const fileStage = new FileStage()
 const filePin = new FilePin()
 const txt2Json = new Txt2Json()
-
 const program = new Command()
 const mcCollectKeys = new McCollectKeys()
 const mcPriceUpdate = new McPriceUpdate()
 const mcApproval = new McApproval()
+
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
