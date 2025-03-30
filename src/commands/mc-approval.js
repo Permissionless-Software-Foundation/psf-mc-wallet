@@ -14,14 +14,13 @@
 // Global npm libraries
 import bitcore from '@chris.troutner/bitcore-lib-cash'
 import RetryQueue from '@chris.troutner/retry-queue'
-import FormData from 'form-data'
-import { Readable } from 'stream'
-import axios from 'axios'
+import fs from 'fs'
 
 // Local libraries
 import WalletUtil from '../lib/wallet-util.js'
 import config from '../../config/index.js'
 import McCollectKeys from './mc-collect-keys.js'
+import MsgNostrSend from './msg-nostr-send.js'
 
 // CONSTANTS
 // const WRITE_PRICE_ADDR = 'bitcoincash:qqlrzp23w08434twmvr4fxw672whkjy0py26r63g3d'
@@ -42,6 +41,7 @@ class McApproval {
     this.getPublicKeys = this.getPublicKeys.bind(this)
     this.createMultisigWallet = this.createMultisigWallet.bind(this)
     this.createMultisigTx = this.createMultisigTx.bind(this)
+    this.sendTxToMc = this.sendTxToMc.bind(this)
   }
 
   async run (flags) {
@@ -68,6 +68,8 @@ class McApproval {
       const txObj = await this.createMultisigTx(walletObj, flags)
       console.log('txObj: ', txObj)
 
+      await this.sendTxToMc({ txObj, keys, flags })
+
       return true
     } catch (err) {
       console.error(err)
@@ -86,6 +88,12 @@ class McApproval {
     const txid = flags.txid
     if (!txid || txid === '') {
       throw new Error('You must specify a txid with the -t flag.')
+    }
+
+    // Exit if json not specified.
+    const json = flags.json
+    if (!json || json === '') {
+      throw new Error('You must specify a json file with a message property, using the -j flag.')
     }
 
     return true
@@ -212,6 +220,50 @@ class McApproval {
       return unsignedTxObj
     } catch (err) {
       console.error('Error in createMultisigTx(): ', err)
+      throw err
+    }
+  }
+
+  async sendTxToMc (inObj = {}) {
+    try {
+      const { txObj, keys, flags } = inObj
+
+      // Instantiate the msg-nostr-send library.
+      const msgNostrSend = new MsgNostrSend()
+
+      // Save the data to an external file.
+      const txData = JSON.stringify({ data: txObj })
+      const filePath = './files/data.json'
+      fs.writeFileSync(filePath, txData)
+
+      // Loop through each address holding a Minting Council NFT.
+      for (let i = 0; i < keys.length; i++) {
+        const thisPair = keys[i]
+
+        const publicKey = thisPair.pubKey
+        const bchAddress = thisPair.addr
+        console.log(`Sending multisig TX to ${bchAddress} and encrypting with public key ${publicKey}`)
+
+        const now = new Date()
+
+        // Generate a flags object for the msg-nostr-send command.
+        const sendFlags = {
+          addr: bchAddress,
+          name: flags.name,
+          msg: flags.json,
+          subject: `Adjust Write Price on ${now.toLocaleDateString()}`,
+          json: flags.json,
+          data: 'data.json'
+        }
+
+        // Send the E2EE message with data to the current MC NFT holder.
+        await this.retryQueue.addToQueue(msgNostrSend.run, sendFlags)
+        console.log('\n\n')
+      }
+
+      return true
+    } catch (err) {
+      console.error('Error in sendTxToMc(): ', err)
       throw err
     }
   }

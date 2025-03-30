@@ -159,9 +159,10 @@ program.command('mc-price-update')
   .action(mcPriceUpdate.run)
 
 program.command('mc-approval')
-  .description('Generate a PS009 approval transaction for the Minting Council NFTs')
-  .option('-n, --name <string>', 'wallet name to pay for message signal')
-  .option('-t, --txid <string>', 'TXID of the price update transaction')
+  .description('Generate a PS009 multisig approval transaction and send it to each Minting Council NFT holder for signing.')
+  .option('-n, --name <string>', '(required) wallet name to pay for message signal')
+  .option('-t, --txid <string>', '(required) TXID of the price update transaction')
+  .option('-j, --json <filename>', '(required) File name in the files directory containing the message in JSON format')
   .action(mcApproval.run)
 
 program.parseAsync(process.argv)
