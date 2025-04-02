@@ -18,7 +18,7 @@ import config from '../../config/index.js'
 // const GROUP_ID = '8e8d90ebdb1791d58eba7acd428ff3b1e21c47fb7aba2ba3b5b815aa0fe7d6d5'
 
 // Test Minting Council Group Token
-const GROUP_ID = '4c039aa116b018f851cfe05e4e6e5a2d45076964a38d6b875ffd2f6bb5b3f843'
+const GROUP_ID = '029845aa9c4ee882a33b8c65a6531a3b2e92c05cd904b2d281dc75badc663151'
 
 class McCollectKeys {
   constructor () {

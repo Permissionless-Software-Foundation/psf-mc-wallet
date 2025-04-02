@@ -34,7 +34,7 @@ const WRITE_PRICE_ADDR = 'bitcoincash:qrwe6kxhvu47ve6jvgrf2d93w0q38av7s5xm9xfehr
 // Update this constant to reflect the Group token uses to generate the Minting
 // Council NFTs.
 // const GROUP_ID = '8e8d90ebdb1791d58eba7acd428ff3b1e21c47fb7aba2ba3b5b815aa0fe7d6d5' // Offical token
-const GROUP_ID = '4c039aa116b018f851cfe05e4e6e5a2d45076964a38d6b875ffd2f6bb5b3f843' // Test Group Token
+const GROUP_ID = '029845aa9c4ee882a33b8c65a6531a3b2e92c05cd904b2d281dc75badc663151' // Test Group Token
 
 class McPriceUpdate {
   constructor () {
