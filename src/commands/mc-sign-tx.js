@@ -7,6 +7,7 @@
 import bitcore from '@chris.troutner/bitcore-lib-cash'
 import RetryQueue from '@chris.troutner/retry-queue'
 import fs from 'fs'
+
 // Local libraries
 import WalletUtil from '../lib/wallet-util.js'
 import config from '../../config/index.js'

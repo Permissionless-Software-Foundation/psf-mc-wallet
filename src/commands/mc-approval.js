@@ -233,7 +233,7 @@ class McApproval {
 
       // Save the data to an external file.
       const txData = JSON.stringify({ data: txObj })
-      const filePath = './files/data.json'
+      const filePath = './files/approval-tx.json'
       fs.writeFileSync(filePath, txData)
 
       // Loop through each address holding a Minting Council NFT.

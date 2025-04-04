@@ -26,6 +26,7 @@ import McPriceUpdate from './src/commands/mc-price-update.js'
 import McApproval from './src/commands/mc-approval.js'
 import Txt2Json from './src/commands/txt2json.js'
 import McSignTx from './src/commands/mc-sign-tx.js'
+import McFinish from './src/commands/mc-finish.js'
 
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
@@ -48,6 +49,8 @@ const mcCollectKeys = new McCollectKeys()
 const mcPriceUpdate = new McPriceUpdate()
 const mcApproval = new McApproval()
 const mcSignTx = new McSignTx()
+const mcFinish = new McFinish()
+
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
@@ -171,5 +174,11 @@ program.command('mc-sign-tx')
   .option('-n, --name <string>', '(required) wallet name holding the MC NFT')
   .option('-t, --txid <string>', '(required) TXID of the message containing the unsigned multisig TX')
   .action(mcSignTx.run)
+
+program.command('mc-finish')
+  .description('Retrieve signatures from e2ee messages and combine them to fully sign the multisignature approval transaction.')
+  .option('-n, --name <string>', '(required) wallet name holding the MC NFT')
+  .option('-t, --txids <string>', '(required) Array of TXIDs of the messages containing the signatures')
+  .action(mcFinish.run)
 
 program.parseAsync(process.argv)
