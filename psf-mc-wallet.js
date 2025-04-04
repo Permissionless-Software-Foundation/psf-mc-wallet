@@ -25,6 +25,7 @@ import McCollectKeys from './src/commands/mc-collect-keys.js'
 import McPriceUpdate from './src/commands/mc-price-update.js'
 import McApproval from './src/commands/mc-approval.js'
 import Txt2Json from './src/commands/txt2json.js'
+import McSignTx from './src/commands/mc-sign-tx.js'
 
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
@@ -46,7 +47,7 @@ const program = new Command()
 const mcCollectKeys = new McCollectKeys()
 const mcPriceUpdate = new McPriceUpdate()
 const mcApproval = new McApproval()
-
+const mcSignTx = new McSignTx()
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
@@ -164,5 +165,11 @@ program.command('mc-approval')
   .option('-t, --txid <string>', '(required) TXID of the price update transaction')
   .option('-j, --json <filename>', '(required) File name in the files directory containing the message in JSON format')
   .action(mcApproval.run)
+
+program.command('mc-sign-tx')
+  .description('Sign a PS009 multisig approval transaction.')
+  .option('-n, --name <string>', '(required) wallet name holding the MC NFT')
+  .option('-t, --txid <string>', '(required) TXID of the message containing the unsigned multisig TX')
+  .action(mcSignTx.run)
 
 program.parseAsync(process.argv)

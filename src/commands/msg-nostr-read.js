@@ -60,9 +60,9 @@ class MsgNostrRead {
       console.log(`\nMessage:\n${msgStr}`)
 
       // Display information about data attached to the message.
-      this.handleData(clearMsg, flags)
+      const data = this.handleData(clearMsg, flags)
 
-      return clearMsg
+      return { sender, clearMsg, data }
     } catch (err) {
       console.error('Error in send-bch: ', err)
       return 0
@@ -159,10 +159,13 @@ class MsgNostrRead {
         } else {
           const dataStr = JSON.stringify(msgObj.data, null, 2)
           console.log('\n\nData: \n', dataStr)
+
+          return msgObj.data
         }
       }
 
-      return true
+      // Return null to signal there is no data.
+      return null
     } catch (err) {
       console.error('Error in handleData(): ', err)
       throw err
