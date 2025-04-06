@@ -19,7 +19,7 @@ This software requires node.js v20 or higher. Instructions for installation:
 
 -----
 
-### Message Commands
+### Minting Council Commands
 
 This fork retains all the commands available in [psf-msg-wallet](https://github.com/Permissionless-Software-Foundation/psf-msg-wallet). Check that README for additional commands.
 
@@ -41,7 +41,7 @@ Show the BCH address and public key for all Minting Council NFT holders. This in
 
 #### Update Price
 
-The 'Head Janitor' initiate the price updating ceremony by issuing a Price Update transaction. This command does a couple things:
+The 'Head Janitor' initiates the price updating ceremony by issuing a Price Update transaction. This command does a couple things:
 - Uploads a JSON file to the [PSFFPP network](https://psffpp.com) containing all the information about the desired price update.
 - Generates a BCH TX, sent to a specific address, with an OP_RETURN in the first output that points to the pinned file
 

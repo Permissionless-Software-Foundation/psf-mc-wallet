@@ -29,7 +29,7 @@ import McCollectKeys from './mc-collect-keys.js'
 // Update this constant to reflect the Group token uses to generate the Minting
 
 // const WRITE_PRICE_ADDR = 'bitcoincash:qqlrzp23w08434twmvr4fxw672whkjy0py26r63g3d'
-const WRITE_PRICE_ADDR = 'bitcoincash:qrwe6kxhvu47ve6jvgrf2d93w0q38av7s5xm9xfehr' // test address
+const WRITE_PRICE_ADDR = 'bitcoincash:qrwe6kxhvu47ve6jvgrf2d93w0q38av7s5xm9xfehr' // mainnet address
 
 // Update this constant to reflect the Group token uses to generate the Minting
 // Council NFTs.
@@ -50,6 +50,7 @@ class McPriceUpdate {
     this.validateFlags = this.validateFlags.bind(this)
     this.getPublicKeys = this.getPublicKeys.bind(this)
     this.createMultisigWallet = this.createMultisigWallet.bind(this)
+    this.calcP2wdbWritePrice = this.calcP2wdbWritePrice.bind(this)
     this.uploadUpdateObject = this.uploadUpdateObject.bind(this)
     this.writeCidToBlockchain = this.writeCidToBlockchain.bind(this)
   }
@@ -75,7 +76,7 @@ class McPriceUpdate {
 
       // Get the current write price from an API.
       // TODO: self-generate this price so that we don't have to trust the API.
-      const writePrice = await this.bchWallet.getPsfWritePrice()
+      const writePrice = await this.calcP2wdbWritePrice()
 
       // Compile an update object
       const updateTxObj = {
@@ -83,7 +84,7 @@ class McPriceUpdate {
         keys,
         walletObj,
         multisigAddr: walletObj.address,
-        p2wdbWritePrice: writePrice
+        writePrice
       }
 
       const cid = await this.uploadUpdateObject(updateTxObj)
@@ -173,6 +174,24 @@ class McPriceUpdate {
       return walletObj
     } catch (err) {
       console.error('Error in createMultisigWallet()')
+      throw err
+    }
+  }
+
+  // Calculate how much $0.01 USD is in PSF tokens.
+  async calcP2wdbWritePrice () {
+    try {
+      const result = await this.axios.get('https://psfoundation.cash/price')
+      // console.log('PSF price data: ', result.data)
+
+      let tokensPerPenny = 0.01 / result.data.usdPerToken
+
+      // Round to 8 decimal points
+      tokensPerPenny = this.bchWallet.bchjs.Util.floor8(tokensPerPenny)
+
+      return tokensPerPenny
+    } catch (err) {
+      console.log('Error in calcP2wdbWritePrice(): ', err)
       throw err
     }
   }
