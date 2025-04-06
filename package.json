@@ -28,7 +28,7 @@
     "minimal-slp-wallet": "5.13.2",
     "nostr": "0.2.8",
     "nostr-tools": "2.8.1",
-    "psffpp": "1.1.11",
+    "psffpp": "../psffpp",
     "shelljs": "0.8.5",
     "ws": "8.18.0"
   },

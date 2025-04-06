@@ -23,8 +23,8 @@ import McCollectKeys from './mc-collect-keys.js'
 import MsgNostrSend from './msg-nostr-send.js'
 
 // CONSTANTS
-// const WRITE_PRICE_ADDR = 'bitcoincash:qqlrzp23w08434twmvr4fxw672whkjy0py26r63g3d'
-const WRITE_PRICE_ADDR = 'bitcoincash:qrwe6kxhvu47ve6jvgrf2d93w0q38av7s5xm9xfehr' // test address
+// const WRITE_PRICE_ADDR = 'bitcoincash:qrwe6kxhvu47ve6jvgrf2d93w0q38av7s5xm9xfehr' // mainnet address
+const WRITE_PRICE_ADDR = 'bitcoincash:qzsp4pksus32237h3m7skgs3e2535hgc3uukx0u2sz' // test address
 
 class McApproval {
   constructor () {
