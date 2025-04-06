@@ -42,16 +42,16 @@ class McSignTx {
         data: true
       }
       const { sender, data } = await this.msgNostrRead.run(msgFlags)
-      console.log(`sender: ${sender}`)
+      // console.log(`sender: ${sender}`)
       // console.log(`clearMsg: ${clearMsg}`)
-      console.log('data: ', data)
+      // console.log('data: ', data)
 
       // Initialize the wallet.
       this.bchWallet = await this.walletUtil.instanceWallet(flags.name)
       await this.bchWallet.initialize()
 
       const sig = await this.signTx(data)
-      console.log('sig: ', sig)
+      // console.log('sig: ', sig)
 
       await this.returnSigToSender({ sig, sender, flags })
 
@@ -113,8 +113,6 @@ class McSignTx {
       const txData = JSON.stringify({ data: sig })
       const filePath = './files/data.json'
       fs.writeFileSync(filePath, txData)
-
-      console.log('this.bchWallet.walletInfo: ', this.bchWallet.walletInfo)
 
       // Generate a flags object for the msg-nostr-send command.
       const sendFlags = {
