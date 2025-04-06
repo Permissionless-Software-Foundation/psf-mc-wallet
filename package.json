@@ -12,6 +12,7 @@
   "author": "Chris Troutner",
   "license": "MIT",
   "dependencies": {
+    "@chris.troutner/bitcore-lib-cash": "8.25.26",
     "@chris.troutner/retry-queue": "1.0.10",
     "@noble/hashes": "1.5.0",
     "axios": "1.7.9",
@@ -24,10 +25,10 @@
     "collect.js": "4.36.1",
     "commander": "12.1.0",
     "form-data": "4.0.1",
-    "minimal-slp-wallet": "5.12.1",
+    "minimal-slp-wallet": "5.13.2",
     "nostr": "0.2.8",
     "nostr-tools": "2.8.1",
-    "psffpp": "1.1.10",
+    "psffpp": "1.1.11",
     "shelljs": "0.8.5",
     "ws": "8.18.0"
   },

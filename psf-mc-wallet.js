@@ -22,6 +22,11 @@ import MsgNostrRead from './src/commands/msg-nostr-read.js'
 import FileStage from './src/commands/file-stage.js'
 import FilePin from './src/commands/file-pin.js'
 import McCollectKeys from './src/commands/mc-collect-keys.js'
+import McPriceUpdate from './src/commands/mc-price-update.js'
+import McApproval from './src/commands/mc-approval.js'
+import Txt2Json from './src/commands/txt2json.js'
+import McSignTx from './src/commands/mc-sign-tx.js'
+import McFinish from './src/commands/mc-finish.js'
 
 // Instantiate the subcommands
 const walletCreate = new WalletCreate()
@@ -38,8 +43,14 @@ const msgNostrCheck = new MsgNostrCheck()
 const msgNostrRead = new MsgNostrRead()
 const fileStage = new FileStage()
 const filePin = new FilePin()
+const txt2Json = new Txt2Json()
 const program = new Command()
 const mcCollectKeys = new McCollectKeys()
+const mcPriceUpdate = new McPriceUpdate()
+const mcApproval = new McApproval()
+const mcSignTx = new McSignTx()
+const mcFinish = new McFinish()
+
 program
   // Define the psf-bch-wallet app options
   .name('psf-bch-wallet')
@@ -102,11 +113,13 @@ program.command('msg-verify')
   .action(msgVerify.run)
 
 program.command('msg-nostr-send')
-  .description('Send an E2EE message to a BCH address over Nostr')
+  .description('Send an E2EE message to a BCH address over Nostr. Insert the message directly with the -m flag, or use a JSON file with -j flag.')
   .option('-a, --addr <string>', 'BCH address to send message to')
   .option('-n, --name <string>', 'wallet name to pay for message signal')
-  .option('-m, --msg <string>', 'Full message, which will be encrypted')
-  .option('-s, --subject <string>', 'summary message, like in an email, sent as cleartext')
+  .option('-s, --subject <string>', '(optiona) summary message, like in an email, sent as cleartext')
+  .option('-m, --msg <string>', '(optional) Full message, which will be encrypted')
+  .option('-j, --json <filename>', '(optional) File name in the files directory containing the message in JSON format')
+  .option('-d, --data <filename>', '(optional) File name in the files directory containing data to be included with the message')
   .action(msgNostrSend.run)
 
 program.command('msg-nostr-check')
@@ -118,6 +131,7 @@ program.command('msg-nostr-read')
   .description('Read an E2EE message sent to your wallet, and stored on Nostr')
   .option('-n, --name <string>', 'wallet name to pay for message signal')
   .option('-t, --txid <string>', 'TXID of the message signal. Displayed by msg-check-nostr')
+  .option('-d, --data', 'Display data attached to the message')
   .action(msgNostrRead.run)
 
 program.command('file-stage')
@@ -133,9 +147,38 @@ program.command('file-pin')
   .option('-f, --filename <string>', 'Name and extension of the file to be pinned')
   .action(filePin.run)
 
+program.command('txt2json')
+  .description('Convert a txt file to a JSON object')
+  .option('-f, --file <string>', 'full path to txt file to be converted')
+  .action(txt2Json.run)
+
 program.command('mc-collect-keys')
   .description('Collect the public keys of the holders of Minting Council NFTs')
   .option('-n, --name <string>', 'wallet name to pay for message signal')
   .action(mcCollectKeys.run)
+
+program.command('mc-price-update')
+  .description('Update the price of the Minting Council NFTs')
+  .option('-n, --name <string>', 'wallet name to pay for message signal')
+  .action(mcPriceUpdate.run)
+
+program.command('mc-approval')
+  .description('Generate a PS009 multisig approval transaction and send it to each Minting Council NFT holder for signing.')
+  .option('-n, --name <string>', '(required) wallet name to pay for message signal')
+  .option('-t, --txid <string>', '(required) TXID of the price update transaction')
+  .option('-j, --json <filename>', '(required) File name in the files directory containing the message in JSON format')
+  .action(mcApproval.run)
+
+program.command('mc-sign-tx')
+  .description('Sign a PS009 multisig approval transaction.')
+  .option('-n, --name <string>', '(required) wallet name holding the MC NFT')
+  .option('-t, --txid <string>', '(required) TXID of the message containing the unsigned multisig TX')
+  .action(mcSignTx.run)
+
+program.command('mc-finish')
+  .description('Retrieve signatures from e2ee messages and combine them to fully sign the multisignature approval transaction.')
+  .option('-n, --name <string>', '(required) wallet name holding the MC NFT')
+  .option('-t, --txids <string>', '(required) Array of TXIDs of the messages containing the signatures')
+  .action(mcFinish.run)
 
 program.parseAsync(process.argv)

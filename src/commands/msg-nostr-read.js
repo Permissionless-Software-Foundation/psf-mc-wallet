@@ -31,6 +31,8 @@ class MsgNostrRead {
     this.validateFlags = this.validateFlags.bind(this)
     this.msgRead = this.msgRead.bind(this)
     this.decryptMsg = this.decryptMsg.bind(this)
+    this.formatMsg = this.formatMsg.bind(this)
+    this.handleData = this.handleData.bind(this)
   }
 
   async run (flags) {
@@ -49,11 +51,18 @@ class MsgNostrRead {
 
       // Decrypt the message
       const clearMsg = await this.decryptMsg({ encryptedMsgHex: message })
+      // console.log('clearMsg (1): ', clearMsg)
 
-      console.log(`Sender: ${sender}`)
-      console.log(`Message:\n${clearMsg}`)
+      // Format the message
+      const msgStr = await this.formatMsg(clearMsg)
 
-      return clearMsg
+      console.log(`\n\nSender: ${sender}`)
+      console.log(`\nMessage:\n${msgStr}`)
+
+      // Display information about data attached to the message.
+      const data = this.handleData(clearMsg, flags)
+
+      return { sender, clearMsg, data }
     } catch (err) {
       console.error('Error in send-bch: ', err)
       return 0
@@ -116,6 +125,51 @@ class MsgNostrRead {
       throw err
     }
   }
-}
 
+  // Format the message. Test to see if the message is a JSON object. If it is,
+  // parse the JSON and return the message component. If it is not JSON, then
+  // return the message as is.
+  formatMsg (msg) {
+    try {
+      let msgOut = ''
+
+      try {
+        msgOut = JSON.parse(msg)
+        return msgOut.message
+      } catch (err) {
+        return msg
+      }
+    } catch (err) {
+      console.error('Error in formatMsg(): ', err)
+      throw err
+    }
+  }
+
+  // Display information about data attached to the message.
+  handleData (clearMsg, flags) {
+    try {
+      const msgObj = JSON.parse(clearMsg)
+
+      if (!msgObj.data) {
+        console.log('\n\nData: No data attached to the message.')
+        return
+      } else {
+        if (!flags.data) {
+          console.log('\n\nData: There is data attached to the message. Use the -d flag to display it.')
+        } else {
+          const dataStr = JSON.stringify(msgObj.data, null, 2)
+          console.log('\n\nData: \n', dataStr)
+
+          return msgObj.data
+        }
+      }
+
+      // Return null to signal there is no data.
+      return null
+    } catch (err) {
+      console.error('Error in handleData(): ', err)
+      throw err
+    }
+  }
+}
 export default MsgNostrRead
