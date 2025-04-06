@@ -114,11 +114,13 @@ class McSignTx {
       const filePath = './files/data.json'
       fs.writeFileSync(filePath, txData)
 
+      console.log('this.bchWallet.walletInfo: ', this.bchWallet.walletInfo)
+
       // Generate a flags object for the msg-nostr-send command.
       const sendFlags = {
         addr: sender,
         name: flags.name,
-        msg: `{"message": "Signature returned by address ${this.bchWallet.walletInfo.cashaddr}"}`,
+        msg: `{"message": "Signature returned by address ${this.bchWallet.walletInfo.cashAddress}"}`,
         subject: 'MC Approval Signature Returned',
         // json: flags.json,
         data: 'data.json'

@@ -253,7 +253,7 @@ class McApproval {
           msg: flags.json,
           subject: `Adjust Write Price on ${now.toLocaleDateString()}`,
           json: flags.json,
-          data: 'data.json'
+          data: 'approval-tx.json'
         }
 
         // Send the E2EE message with data to the current MC NFT holder.
